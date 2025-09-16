@@ -9,16 +9,27 @@ socket.on('message', (val) => {
 document.querySelector("#message-form").addEventListener('submit', (e) => {
     e.preventDefault();
     const msg = e.target.elements.msgInput.value;
-    socket.emit("sendMessage", msg)
+    socket.emit("sendMessage", msg, (err) => {
+        if (err) {
+            return console.log(err)
+        }
+
+        console.log("Message delivered successfully.")
+    })
 });
 
 document.querySelector("#location").addEventListener("click", () => {
-    if(!navigator.geolocation){
+    if (!navigator.geolocation) {
         return alert("Geolocation not available")
     }
     navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lang = pos.coords.longitude;
-        socket.emit("sendLocation", {lat, lang})
+        const data = {
+            lat: pos.coords.latitude,
+            lang: pos.coords.longitude
+        }
+
+        socket.emit("sendLocation", data, () => {
+            console.log("Location shared successfully")
+        });
     })
 })

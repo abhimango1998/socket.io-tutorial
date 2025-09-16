@@ -2,6 +2,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const path = require('path')
+const Filter = require('bad-words')
 
 const app = express()
 const server = http.createServer(app); //Passing app into http.createServer(app) wires up your Express app as the request handler for the HTTP server.
@@ -19,13 +20,18 @@ io.on('connection', (socket) => {
     socket.emit("message", "Welcome")
     socket.broadcast.emit("message", "A new user has joined!");
 
-    socket.on("sendMessage", (msg) => {
-        // socket.emit("countUpdated", count) // emitting the event on particular connection
+    socket.on("sendMessage", (msg, cb) => {
+        const filter = new Filter();
+        if (filter.isProfane(msg)) {
+            return cb("Bad words are not allowed!")
+        }
         io.emit("message", msg) // emits on all connections
+        cb();
     })
 
-    socket.on("sendLocation", (loc) => {
+    socket.on("sendLocation", (loc, cb) => {
         io.emit("message", `https://google.com/maps?q=${loc.lat},${loc.lang}`)
+        cb();
     })
 
     socket.on('disconnect', () => {
