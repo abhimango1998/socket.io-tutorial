@@ -10,20 +10,22 @@ const io = socketio(server)
 const publicDirPath = path.join(__dirname, '../public')
 app.use(express.static(publicDirPath))
 
-let count = 0;
-
 // socket is an object which contains info about each connected client
 io.on('connection', (socket) => {
     console.log('New web socket connection...')
 
     // countUpdated event is use to send the initial count to the client and also to send any changes to the count.
     // The second args is available on the client cb func param
-    socket.emit("countUpdated", count)
+    socket.emit("message", "Welcome")
+    socket.broadcast.emit("message", "A new user has joined!");
 
-    socket.on("increment", ()=>{
-        count++;
+    socket.on("sendMessage", (msg)=>{
         // socket.emit("countUpdated", count) // emitting the event on particular connection
-        io.emit("countUpdated", count) // emits on all connections
+        io.emit("message", msg) // emits on all connections
+    })
+
+    socket.on('disconnect', () =>{
+        io.emit("message", "A user has left!")
     })
 })
 
