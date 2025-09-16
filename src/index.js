@@ -19,12 +19,16 @@ io.on('connection', (socket) => {
     socket.emit("message", "Welcome")
     socket.broadcast.emit("message", "A new user has joined!");
 
-    socket.on("sendMessage", (msg)=>{
+    socket.on("sendMessage", (msg) => {
         // socket.emit("countUpdated", count) // emitting the event on particular connection
         io.emit("message", msg) // emits on all connections
     })
 
-    socket.on('disconnect', () =>{
+    socket.on("sendLocation", (loc) => {
+        io.emit("message", `https://google.com/maps?q=${loc.lat},${loc.lang}`)
+    })
+
+    socket.on('disconnect', () => {
         io.emit("message", "A user has left!")
     })
 })
