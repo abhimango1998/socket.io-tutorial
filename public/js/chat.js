@@ -2,55 +2,62 @@
 const socket = io();
 
 // DOM elements
-const $messageForm = document.querySelector("#message-form")
-const $location = document.querySelector("#location")
-const $messageFormInput = $messageForm.querySelector("input")
-const $messageFormButton = $messageForm.querySelector("button")
+const $messageForm = document.querySelector("#message-form");
+const $location = document.querySelector("#location");
+const $messageFormInput = $messageForm.querySelector("input");
+const $messageFormButton = $messageForm.querySelector("button");
 
-const $locationBtn = document.querySelector("#location")
+const $locationBtn = document.querySelector("#location");
 
+const $messages = document.querySelector("#messages");
+const messageTemplate = document.querySelector("#message-template").innerHTML;
 
-// receiving the event which server sends to us (client) 
-socket.on('message', (val) => {
-    console.log(val)
-})
+// receiving the event which server sends to us (client)
+socket.on("message", (val) => {
+  console.log(val);
 
-$messageForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  const html = Mustache.render(messageTemplate, {
+    message: val,
+  });
+  $messages.insertAdjacentHTML("beforeend", html);
+});
 
-    $messageFormButton.setAttribute('disabled', 'disabled')
+$messageForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-    const msg = e.target.elements.msgInput.value;
+  $messageFormButton.setAttribute("disabled", "disabled");
 
-    socket.emit("sendMessage", msg, (err) => {
-        $messageFormButton.removeAttribute('disabled')
-        $messageFormInput.value = ""
-        $messageFormInput.focus()
+  const msg = e.target.elements.msgInput.value;
 
-        if (err) {
-            return console.log(err)
-        }
+  socket.emit("sendMessage", msg, (err) => {
+    $messageFormButton.removeAttribute("disabled");
+    $messageFormInput.value = "";
+    $messageFormInput.focus();
 
-        console.log("Message delivered successfully.")
-    })
+    if (err) {
+      return console.log(err);
+    }
+
+    console.log("Message delivered successfully.");
+  });
 });
 
 $location.addEventListener("click", () => {
-    if (!navigator.geolocation) {
-        return alert("Geolocation not available")
-    }
+  if (!navigator.geolocation) {
+    return alert("Geolocation not available");
+  }
 
-    $locationBtn.setAttribute('disabled', 'disabled')
+  $locationBtn.setAttribute("disabled", "disabled");
 
-    navigator.geolocation.getCurrentPosition(pos => {
-        const data = {
-            lat: pos.coords.latitude,
-            lang: pos.coords.longitude
-        }
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const data = {
+      lat: pos.coords.latitude,
+      lang: pos.coords.longitude,
+    };
 
-        socket.emit("sendLocation", data, () => {
-            $locationBtn.removeAttribute("disabled")
-            console.log("Location shared successfully")
-        });
-    })
-})
+    socket.emit("sendLocation", data, () => {
+      $locationBtn.removeAttribute("disabled");
+      console.log("Location shared successfully");
+    });
+  });
+});
