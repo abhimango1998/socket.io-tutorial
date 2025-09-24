@@ -15,20 +15,22 @@ const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#location-template").innerHTML;
 
 // receiving the event which server sends to us (client)
-socket.on("message", (val) => {
-  console.log(val);
+socket.on("message", (data) => {
+  console.log(data);
 
   const html = Mustache.render(messageTemplate, {
-    message: val,
+    message: data.text,
+    createdAt: moment(data.createdAt).format("h:mm a"),
   });
   $messages.insertAdjacentHTML("beforeend", html);
 });
 
-socket.on("location", (loc) => {
-  console.log(loc);
+socket.on("location", (data) => {
+  console.log(data);
 
   const html = Mustache.render(locationTemplate, {
-    location: loc,
+    location: data.url,
+    createdAt: moment(data.createdAt).format("h:mm a"),
   });
   $messages.insertAdjacentHTML("beforeend", html);
 });
