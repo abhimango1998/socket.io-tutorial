@@ -17,11 +17,18 @@
       />
       <button type="submit">Send</button>
     </form>
+
     <button id="location">Send Location</button>
 
     <script id="message-template" type="text/html">
       <div>
         <p>{{message}}</p>
+      </div>
+    </script>
+
+    <script id="location-template" type="text/html">
+      <div>
+        <p><a href="{{location}}" target="_blank">My Current Location</a></p>
       </div>
     </script>
 

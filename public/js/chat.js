@@ -12,12 +12,23 @@ const $locationBtn = document.querySelector("#location");
 const $messages = document.querySelector("#messages");
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 
+const locationTemplate = document.querySelector("#location-template").innerHTML;
+
 // receiving the event which server sends to us (client)
 socket.on("message", (val) => {
   console.log(val);
 
   const html = Mustache.render(messageTemplate, {
     message: val,
+  });
+  $messages.insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("location", (loc) => {
+  console.log(loc);
+
+  const html = Mustache.render(locationTemplate, {
+    location: loc,
   });
   $messages.insertAdjacentHTML("beforeend", html);
 });
