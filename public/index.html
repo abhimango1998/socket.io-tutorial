@@ -10,133 +10,77 @@
     style="
       margin: 0;
       font-family: Arial, sans-serif;
+      background: #f0f2f5;
       height: 100vh;
       display: flex;
-      background: #f0f2f5;
+      justify-content: center;
+      align-items: center;
     "
   >
-    <!-- Sidebar -->
     <div
       style="
-        width: 220px;
-        background: #2f3640;
-        color: white;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 320px;
+        text-align: center;
       "
     >
-      <h1 style="margin: 0; font-size: 20px; text-align: center">
-        Web socket tutorial
-      </h1>
-    </div>
-
-    <!-- Chat area -->
-    <div style="flex: 1; display: flex; flex-direction: column">
-      <!-- Messages container -->
-      <div
-        id="messages"
-        style="
-          flex: 1;
-          padding: 20px;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          background: white;
-        "
-      ></div>
-
-      <!-- Input area -->
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          padding: 10px;
-          background: #f7f7f7;
-          border-top: 1px solid #ddd;
-        "
+      <h1 style="margin-bottom: 20px; color: #333; font-size: 24px">Join</h1>
+      <form
+        action="/chat.html"
+        style="display: flex; flex-direction: column; gap: 15px"
       >
-        <form
-          id="message-form"
-          style="flex: 1; display: flex; gap: 10px; margin: 0"
+        <label style="text-align: left; font-size: 14px; color: #555"
+          >Display Name</label
         >
-          <input
-            name="msgInput"
-            type="text"
-            placeholder="Write you message here..."
-            style="
-              flex: 1;
-              padding: 10px;
-              border: 1px solid #ccc;
-              border-radius: 20px;
-              outline: none;
-            "
-          />
-          <button
-            type="submit"
-            style="
-              padding: 10px 16px;
-              border: none;
-              border-radius: 20px;
-              background: #4a90e2;
-              color: white;
-              cursor: pointer;
-            "
-          >
-            Send
-          </button>
-        </form>
-        <button
-          id="location"
+        <input
+          type="text"
+          name="username"
+          placeholder="Display Name"
+          required
           style="
-            margin-left: 10px;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 20px;
-            background: #2ecc71;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+          "
+        />
+
+        <label style="text-align: left; font-size: 14px; color: #555"
+          >Room</label
+        >
+        <input
+          type="text"
+          name="room"
+          placeholder="Room"
+          required
+          style="
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+          "
+        />
+
+        <button
+          style="
+            margin-top: 10px;
+            padding: 12px;
+            background: #4a90e2;
             color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
           "
         >
-          Send Location
+          Join
         </button>
-      </div>
+      </form>
     </div>
-
-    <!-- Templates -->
-    <script id="message-template" type="text/html">
-      <div
-        style="background:#e9f5ff; padding:10px; border-radius:8px; max-width:70%; align-self:flex-start;"
-      >
-        <p style="margin:0; font-size:14px; color:#333;">
-          {{createdAt}} - {{message}}
-        </p>
-      </div>
-    </script>
-
-    <script id="location-template" type="text/html">
-      <div
-        style="background:#f1f1f1; padding:10px; border-radius:8px; max-width:70%; align-self:flex-start;"
-      >
-        <p style="margin:0; font-size:14px; color:#333;">
-          {{createdAt}}
-          <a
-            href="{{location}}"
-            target="_blank"
-            style="color:#4a90e2; text-decoration:none;"
-            >My Current Location</a
-          >
-        </p>
-      </div>
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
   </body>
 </html>
