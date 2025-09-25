@@ -7,32 +7,38 @@ const {
   generateMessage,
   generateLocationMessage,
 } = require("../src/utils/message");
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+} = require("./utils/users");
 
 const app = express();
-// //Passing app into http.createServer(app) wires up your Express app as the request handler for the HTTP server.
 const server = http.createServer(app);
 
-//attaches Socket.IO to the same server so you can handle both HTTP routes and WebSocket events on the same port.
 const io = socketio(server);
 
 const publicDirPath = path.join(__dirname, "../public");
 app.use(express.static(publicDirPath));
 
-// socket is an object which contains info about each connected client
 io.on("connection", (socket) => {
   console.log("New web socket connection...");
 
-  // socket.emit("message", generateMessage("Welcome!"));
-  // socket.broadcast.emit("message", generateMessage("A new user has joined!"));
+  socket.on("join", ({ username, room }, cb) => {
+    const { error, user } = addUser({ id: socket.id, username, room });
 
-  socket.on("join", ({ username, room }) => {
-    console.log(`User: ${username} joining room: ${room}`);
+    if (error) {
+      return cb(error);
+    }
 
-    socket.join(room);
+    socket.join(user.room);
     socket.emit("message", generateMessage("Welcome!"));
     socket.broadcast
-      .to(room)
-      .emit("message", generateMessage(`${username} has joined!`));
+      .to(user.room)
+      .emit("message", generateMessage(`${user.username} has joined!`));
+
+    cb();
   });
 
   socket.on("sendMessage", (msg, cb) => {
@@ -40,7 +46,7 @@ io.on("connection", (socket) => {
     if (filter.isProfane(msg)) {
       return cb("Bad words are not allowed!");
     }
-    io.emit("message", generateMessage(msg)); // emits on all connections
+    io.emit("message", generateMessage(msg));
     cb();
   });
 
@@ -55,7 +61,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    io.emit("message", generateMessage("A user has left!"));
+    const user = removeUser(socket.id);
+    if (user)
+      io.to(user.room).emit(
+        "message",
+        generateMessage(`${user.username} has left!`)
+      );
   });
 });
 

@@ -15,7 +15,9 @@ const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#location-template").innerHTML;
 
 // OPTIONS
-const {username, room} = Qs.parse(location.search, { ignoreQueryPrefix: true });
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
 
 // receiving the event which server sends to us (client)
 socket.on("message", (data) => {
@@ -79,4 +81,9 @@ $location.addEventListener("click", () => {
 });
 
 // Emmitting an event to the server
-socket.emit("join", {username, room})
+socket.emit("join", { username, room }, (err) => {
+  if (err) {
+    alert(err);
+    location.href = "/";
+  }
+});
