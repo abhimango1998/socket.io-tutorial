@@ -36,6 +36,9 @@ const removeUser = (id) => {
   if (index !== -1) return users.splice(index, 1)[0];
 };
 
-addUser({ id: 3, username: "Abhishek", room: "south" });
-addUser({ id: 67, username: "John", room: "south" });
-addUser({ id: 32, username: "Shaun", room: "south" });
+const getUser = (id) => users.find((user) => user.id === id);
+
+const getUsersInRoom = (roomName) => {
+  roomName = roomName.trim().toLowerCase();
+  return users.filter((user) => user.room === roomName);
+};
