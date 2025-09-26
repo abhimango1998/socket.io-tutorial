@@ -33,10 +33,13 @@ io.on("connection", (socket) => {
     }
 
     socket.join(user.room);
-    socket.emit("message", generateMessage("Welcome!"));
+    socket.emit("message", generateMessage("Admin", "Welcome!"));
     socket.broadcast
       .to(user.room)
-      .emit("message", generateMessage(`${user.username} has joined!`));
+      .emit(
+        "message",
+        generateMessage("Admin", `${user.username} has joined!`)
+      );
 
     cb();
   });
@@ -46,17 +49,25 @@ io.on("connection", (socket) => {
     if (filter.isProfane(msg)) {
       return cb("Bad words are not allowed!");
     }
-    io.emit("message", generateMessage(msg));
+
+    const user = getUser(socket.id);
+    if (user) {
+      io.to(user.room).emit("message", generateMessage(user.username, msg));
+    }
     cb();
   });
 
   socket.on("sendLocation", (loc, cb) => {
-    io.emit(
-      "location",
-      generateLocationMessage(
-        `https://google.com/maps?q=${loc.lat},${loc.lang}`
-      )
-    );
+    const user = getUser(socket.id);
+    if (user) {
+      io.to(user.room).emit(
+        "location",
+        generateLocationMessage(
+          user.username,
+          `https://google.com/maps?q=${loc.lat},${loc.lang}`
+        )
+      );
+    }
     cb();
   });
 
@@ -65,7 +76,7 @@ io.on("connection", (socket) => {
     if (user)
       io.to(user.room).emit(
         "message",
-        generateMessage(`${user.username} has left!`)
+        generateMessage("Admin", `${user.username} has left!`)
       );
   });
 });
@@ -73,5 +84,5 @@ io.on("connection", (socket) => {
 const port = process.env.PORT || 8000;
 
 server.listen(port, () => {
-  console.log("Server is running on:", port);
+  console.log("Server is running on:", `http://localhost:${port}`);
 });

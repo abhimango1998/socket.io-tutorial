@@ -73,6 +73,8 @@
               border-radius: 20px;
               outline: none;
             "
+            required
+            autocomplete="off"
           />
           <button
             type="submit"
@@ -110,6 +112,7 @@
       <div
         style="background:#e9f5ff; padding:10px; border-radius:8px; max-width:70%; align-self:flex-start;"
       >
+        <p style="margin:0; font-size:14px; color:#333;">{{username}}</p>
         <p style="margin:0; font-size:14px; color:#333;">
           {{createdAt}} - {{message}}
         </p>
@@ -120,6 +123,7 @@
       <div
         style="background:#f1f1f1; padding:10px; border-radius:8px; max-width:70%; align-self:flex-start;"
       >
+        <p>{{username}}</p>
         <p style="margin:0; font-size:14px; color:#333;">
           {{createdAt}}
           <a
