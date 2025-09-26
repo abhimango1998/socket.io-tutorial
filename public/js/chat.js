@@ -14,9 +14,20 @@ const messageTemplate = document.querySelector("#message-template").innerHTML;
 
 const locationTemplate = document.querySelector("#location-template").innerHTML;
 
+const sideBarTemplate = document.querySelector("#sidebar-template").innerHTML;
+
 // OPTIONS
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
+});
+
+socket.on("roomData", ({ room, users }) => {
+  const html = Mustache.render(sideBarTemplate, {
+    room,
+    users,
+  });
+
+  document.querySelector("#sidebar").innerHTML = html;
 });
 
 // receiving the event which server sends to us (client)
